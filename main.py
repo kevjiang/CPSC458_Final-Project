@@ -6,14 +6,36 @@ import time
 import game
 
 def parse_input(var):
-    return 'sdf'
+    v = var.strip().split()
+    if len(v) == 1:
+        if v[0] == 'check':
+            return 'check'
+        elif v[0] == 'fold':
+            return 'fold'
+    elif len(v) == 2:
+        if v[0] == 'bet':
+            n = int(v[1])
+            if n > 0 and n < 100:
+                return ('bet', n)
+    return 'invalid'
 
 if __name__ == '__main__':
     k = 0
     try:
         print '''
-            Here's some instructions...
-            Lolcats
+            This is the heads up poker player!
+
+            You are playing against a single opponent.
+            Each of you have $100.
+
+            The blinds are 1, 2.
+
+            You are the small blind.
+
+            These are your options:
+                check
+                fold
+                bet number
 
         '''
         # start_game
@@ -21,13 +43,17 @@ if __name__ == '__main__':
         gm.preflop()
         print 'Your ' + str(gm.small)
         sys.stdout.write('> ')
-        preflop = sys.stdin.readline()
+# preflop
+        val = parse_input(sys.stdin.readline())
         sys.stdout.write('> ')
-        flop = sys.stdin.readline()
+# flop
+        val = parse_input(sys.stdin.readline())
         sys.stdout.write('> ')
-        turn = sys.stdin.readline()
+# turn
+        val = parse_input(sys.stdin.readline())
         sys.stdout.write('> ')
-        river = sys.stdin.readline()
+# river
+        val = parse_input(sys.stdin.readline())
     except KeyboardInterrupt:
        sys.stdout.flush()
        pass
