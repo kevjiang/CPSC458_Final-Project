@@ -29,9 +29,9 @@ VALUES = {
     '8': 8,
     '9': 9,
     'T': 10,
-    'J': 10,
-    'Q': 10,
-    'K': 10}
+    'J': 11,
+    'Q': 12,
+    'K': 13}
 
 
 # define card class
@@ -57,6 +57,9 @@ class Card:
 
     def get_rank(self):
         return self.rank
+
+    def get_value(self):
+        return VALUES[self.rank]
 
     def draw(self, canvas, pos):
         card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank),
