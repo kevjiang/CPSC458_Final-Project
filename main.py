@@ -4,6 +4,7 @@ import logging
 import sys
 import time
 import game
+import preflop_sim
 
 def parse_input(var):
     v = var.strip().split()
@@ -17,7 +18,7 @@ def parse_input(var):
             n = int(v[1])
             if n > 0 and n < 100:
                 return ('bet', n)
-    return 'invalid'
+    raise ValueError('The input is invalid.')
 
 if __name__ == '__main__':
     k = 0
@@ -41,18 +42,29 @@ if __name__ == '__main__':
         # start_game
         gm = game.Game()
         gm.preflop()
-        print 'Your ' + str(gm.small)
-        sys.stdout.write('> ')
-# preflop
+        print 'Your ', gm.small
+        print 'Your preflop strngth is ', preflop_sim.getPreflopStrength(gm.small)
+
+        sys.stdout.write('\nPreflop choice > ')
         val = parse_input(sys.stdin.readline())
-        sys.stdout.write('> ')
-# flop
+
+
+        gm.flop()
+        print gm.table
+
+        sys.stdout.write('\nFlop choice    > ')
         val = parse_input(sys.stdin.readline())
-        sys.stdout.write('> ')
-# turn
+
+        gm.turn()
+        print gm.table
+
+        sys.stdout.write('\nTurn choice    > ')
         val = parse_input(sys.stdin.readline())
-        sys.stdout.write('> ')
-# river
+
+        gm.river()
+        print gm.table
+
+        sys.stdout.write('\nRiver choice   > ')
         val = parse_input(sys.stdin.readline())
     except KeyboardInterrupt:
        sys.stdout.flush()

@@ -16,6 +16,19 @@ class Game(object):
         self.small.add_card(self.theDeck.deal_card())
         self.small.add_card(self.theDeck.deal_card())
 
+    def flop(self):
+        for i in range(3):
+            self.table.add_card(self.theDeck.deal_card())
+
+    def turn(self):
+        self.table.add_card(self.theDeck.deal_card())
+
+    def river(self):
+        self.table.add_card(self.theDeck.deal_card())
+
+    def eval(self):
+        return hands.compare_hands(self.small, self.big, self.table)
+
 def basic_game():
     theDeck = cards.Deck()
     theDeck.shuffle()
