@@ -1,5 +1,6 @@
 # http://stackoverflow.com/questions/5293405/algorithm-to-determine-the-winner-of-a-texas-holdem-hand
 
+import logging
 import itertools
 from collections import Counter
 
@@ -298,8 +299,13 @@ def compare_hands_helper(h1, h2):
         return "right", two[0], two[1]
 
 
-def compare_hands(h1, h2):
-    return compare_hands_helper(h1.list_rep(), h2.list_rep())
+def compare_hands(h1, h2, river=None):
+    if river:
+        return compare_hands_helper(
+            h1.list_rep() + river.list_rep(),
+            h2.list_rep() + river.list_rep())
+    else:
+        return compare_hands_helper(h1.list_rep(), h2.list_rep())
 
 
 '''

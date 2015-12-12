@@ -1,4 +1,5 @@
 import random
+import logging
 
 # load card sprite - 936x384 - source: jfitz.com
 CARD_SIZE = (72, 96)

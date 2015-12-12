@@ -1,5 +1,6 @@
 import cards
 import hands
+import logging
 
 if __name__ == '__main__':
     theDeck = cards.Deck()
