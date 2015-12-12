@@ -77,7 +77,7 @@ class Hand:
         self.cards = []
 
     def __str__(self):
-        ans = "Hand contains "
+        ans = "hand contains "
         for i in range(len(self.cards)):
             ans += str(self.cards[i]) + " "
         return ans

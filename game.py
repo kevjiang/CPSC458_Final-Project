@@ -2,6 +2,20 @@ import cards
 import hands
 import logging
 
+class Game(object):
+    def __init__(self):
+        self.theDeck = cards.Deck()
+        self.theDeck.shuffle()
+        self.small = cards.Hand()
+        self.big = cards.Hand()
+        self.table = cards.Hand()
+
+    def preflop(self):
+        self.big.add_card(self.theDeck.deal_card())
+        self.big.add_card(self.theDeck.deal_card())
+        self.small.add_card(self.theDeck.deal_card())
+        self.small.add_card(self.theDeck.deal_card())
+
 def basic_game():
     theDeck = cards.Deck()
     theDeck.shuffle()
