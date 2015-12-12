@@ -21,7 +21,7 @@ def getIndicesFromHand(hand):
   else:
     return [secondval - 1, firstval - 1]
 
-# creates monte carlo simulation, lower left triangular piece of matrix is unsigned, upper right is signed
+# creates monte carlo simulation, lower left triangular piece of matrix is signed, upper right is unsigned
 def simulate(filename = "preflop_values", trials = 0):
   # holds card combos and results in a vector of [#wins, #ties, #losses]
   #mat = []
@@ -61,13 +61,23 @@ def simulate(filename = "preflop_values", trials = 0):
       
   pickle.dump(mat, open(filename, "wb"))
 
-def printMatrix(filename = "preflop_values")
+def printMatrix(filename = "preflop_values"):
   mat = pickle.load(open(filename, "rb"))
   print mat
 
-def preflopStrength(hand, filename = "preflop_values", trials = 10000):
+# returns [% chance of win, % chance of push, % chance of loss]
+def getPreflopStrength(hand, filename = "preflop_values"):
   mat = pickle.load(open(filename, "rb"))
   indices = getIndicesFromHand(hand)
-  return mat[indices[0]][indices[1]]
+  chances = mat[indices[0]][indices[1]]
+  s = chances[0] + chances[1] + chances[2]
+  return [chances[0] / float(s), chances[1] / float(s), chances[2] / float(s)]
 
-simulate("preflop_values", 9900)
+#simulate("preflop_values", 99000)
+#theDeck = cards.Deck()
+#theDeck.shuffle()
+#hand = cards.Hand()
+#hand.add_card(theDeck.deal_card())
+#hand.add_card(theDeck.deal_card())
+#print hand
+#print getPreflopStrength(hand)
