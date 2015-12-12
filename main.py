@@ -1,17 +1,33 @@
 import cards
 import hands
 import logging
+import sys
+import time
+import game
+
+def parse_input(var):
+    return 'sdf'
 
 if __name__ == '__main__':
-    theDeck = cards.Deck()
-    theDeck.shuffle()
-    playerhand = cards.Hand()
-    househand = cards.Hand()
-    for i in range(5):
-        playerhand.add_card(theDeck.deal_card())
-        househand.add_card(theDeck.deal_card())
-    # playerscore = playerhand.get_value()
-    # house_val = househand.get_value()
-    print playerhand.list_rep()
-    print househand.list_rep()
-    print hands.compare_hands(playerhand, househand)
+    k = 0
+    try:
+        print '''
+            Here's some instructions...
+            Lolcats
+
+        '''
+        # start_game
+        gm = game.Game()
+        gm.preflop()
+        print 'Your ' + str(gm.small)
+        sys.stdout.write('> ')
+        preflop = sys.stdin.readline()
+        sys.stdout.write('> ')
+        flop = sys.stdin.readline()
+        sys.stdout.write('> ')
+        turn = sys.stdin.readline()
+        sys.stdout.write('> ')
+        river = sys.stdin.readline()
+    except KeyboardInterrupt:
+       sys.stdout.flush()
+       pass
