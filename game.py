@@ -15,11 +15,18 @@ def basic_game():
     small.add_card(theDeck.deal_card())
     small.add_card(theDeck.deal_card())
 
-# River
-    for i in range(5):
+# Flop
+    for i in range(3):
         river.add_card(theDeck.deal_card())
-        logging.info(str([small.list_rep(), big.list_rep(), river.list_rep()]))
-        logging.info(str(hands.compare_hands(small, big, river)))
+    logging.info(str(['flop', small.list_rep(), big.list_rep(), river.list_rep()]))
+
+# Turn
+    river.add_card(theDeck.deal_card())
+    logging.info(str(['turn', small.list_rep(), big.list_rep(), river.list_rep()]))
+
+# River
+    river.add_card(theDeck.deal_card())
+    logging.info(str(['river', small.list_rep(), big.list_rep(), river.list_rep()]))
     return hands.compare_hands(small, big, river)
 
 if __name__ == '__main__':
