@@ -10,6 +10,12 @@ class GameState:
     TURN = 2
     RIVER = 3
 
+class Choice:
+    CHECK = 0
+    FOLD = 1
+    RAISE 2
+
+
 class Game(object):
     def __init__(self, playerbank, herobank):
         self.theDeck = cards.Deck()
@@ -19,18 +25,69 @@ class Game(object):
         self.table = cards.Hand()
         self.player_bankroll = playerbank
         self.hero_bankroll = herobank
+        self.required = 0
         self.pot = 0
         self.player_is_big_blind = (random.random() > .5)
         self.small_blind = 1
         self.big_blind = 2
         self.state = GameState.PREFLOP
 
+    def parse_input(var):
+        v = var.strip().split()
+        if len(v) == 1:
+            if v[0] == 'check':
+                return game.Choice.CHECK
+            elif v[0] == 'fold':
+                return game.Choice.FOLD
+        elif len(v) == 2:
+            if v[0] == 'bet':
+                n = int(v[1])
+                if n > 0 and n < min(hero_bankroll, player_bankroll):
+                    return (game.Choice.BET, n)
+        raise ValueError('The input is invalid.')
+
+    def player_input():
+        sys.stdout.write('\ncheck/fold/bet > ')
+        val = parse_input(sys.stdin.readline())
+        return val
+
     def preflop(self):
         self.hero.add_card(self.theDeck.deal_card())
         self.hero.add_card(self.theDeck.deal_card())
         self.player.add_card(self.theDeck.deal_card())
         self.player.add_card(self.theDeck.deal_card())
+
+        self.pot = self.pot + self.big_blind + self.small_blind
+        if self.player_is_big_blind:
+            self.player_bankroll -= self.big_blind
+            self.hero_bankroll -= self.small_blind
+            self.required = self.big_blind - self.small_blind
+            val = preflop_player.play_preflop(self.hero, self.pot, self.required, self.hero_bankroll, not self.player_is_big_blind, False)
+
+        self.required = val
+
+        if self.interpret(val) == Choice.FOLD:
+# end game
+            return -1
+        player_input()
+
+        #while (val != ):
+        #    preflop_player.play_preflop()
+
+
+
+
         # sb first
+    def interpret(self, val):
+        if val < self.required:
+            print "Hero has folded."
+            return Choice.FOLD
+        if val == self.required:
+            print "Hero has checked"
+            return Choice.CHECK
+        else:
+            print "Hero has raised by " + str(val - self.required)
+            return (Choice.RAISE, (val - self.required))
 
     def flop(self):
         self.state = FLOP
