@@ -120,6 +120,11 @@ class Deck:
         return ans
         # return a string representing the deck
 
+    def remove_specific_card(self, suit, rank):
+        for d in self.deck:
+            if d.suit == suit and d.rank == rank:
+                self.deck.remove(d)
+
 
 if __name__ == '__main__':
     # deal()
