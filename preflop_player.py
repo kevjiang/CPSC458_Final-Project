@@ -9,10 +9,7 @@ import preflop_sim
 # money in is money already on the table (small blind)
 # money required is how much to call
 def play_preflop(hand, money_in, money_required, stack_size, position = False, small_blind = True):
-  if which_blind: # this means small blind
-    return money_required - money_in # this just calls
-  else:
-    return 0 # this just checks
+  return money_required - money_in # this just calls
     
 
 #def play_preflop(hand, small_blind, big_blind, stack_size, position = False, which_blind = True):
