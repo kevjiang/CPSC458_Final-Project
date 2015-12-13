@@ -34,16 +34,12 @@ def simulate(filename = "preflop_values", trials = 0):
   mat = pickle.load(open(filename, "rb"))
 
   for i in range(trials):
+    print "-----NEWSIM-------"
     theDeck = cards.Deck()
     theDeck.shuffle()
     herohand = cards.Hand()
     adversaryhand = cards.Hand()
 
-    #herohand.add_card(cards.Card('C', '2'))
-    #herohand.add_card(cards.Card('S', '2'))
-    #theDeck.remove_specific_card('C', '2')
-    #theDeck.remove_specific_card('S', '2')
-    
     for j in range(2):
       herohand.add_card(theDeck.deal_card())
       adversaryhand.add_card(theDeck.deal_card())
@@ -55,12 +51,7 @@ def simulate(filename = "preflop_values", trials = 0):
     for j in range(5):
       table.add_card(theDeck.deal_card())
 
-    #print herohand
-    #print adversaryhand
-    #print table
-
     result = hands.compare_hands(herohand, adversaryhand, table)
-    print result
 
     if result[0] == 'left':
       mat[indices[0]][indices[1]][0] += 1
@@ -83,7 +74,8 @@ def getPreflopStrength(hand, filename = "preflop_values"):
   s = chances[0] + chances[1] + chances[2]
   return [chances[0] / float(s), chances[1] / float(s), chances[2] / float(s)]
 
-#simulate("preflop_values", 100)
+
+#simulate("preflop_values", 10)
 #theDeck = cards.Deck()
 #theDeck.shuffle()
 #hand = cards.Hand()

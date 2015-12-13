@@ -35,7 +35,7 @@ def is_royal(h):
         return False
 
 
-# converts hand to number valeus and then evaluates if they are sequential
+# converts hand to number values and then evaluates if they are sequential
 # AKA a straight
 def is_seq(h):
     ace = False
@@ -71,7 +71,8 @@ def is_seq(h):
 
 def is_flush(h):
     suits = [x[-1] for x in h]
-    if len(set(suits)) == 1:
+    i = Most_Common(suits)
+    if i[1] >= 5:
         return True, h
     else:
         return False
@@ -194,6 +195,8 @@ def evaluate_hand(h):
 # body got time for that
 def compare_hands_helper(h1, h2):
     one, two = evaluate_hand(h1), evaluate_hand(h2)
+    print one
+    print two
     if one[0] == two[0]:
 
         if one[0] == "STRAIGHT FLUSH":
@@ -249,7 +252,7 @@ def compare_hands_helper(h1, h2):
                 else:
                     return "left", one[0], one[1]
 
-            elif h1 > h2:
+            elif sh1 < sh2:
                 return "right", two[0], two[1]
             else:
                 return "left", one[0], one[1]
@@ -267,6 +270,8 @@ def compare_hands_helper(h1, h2):
             sett1, sett2 = convert_tonums(h1), convert_tonums(h2)
             sett1, sett2 = [int(x[:-1])
                             for x in sett1], [int(x[:-1]) for x in sett2]
+            sett1 = sett1[0:5]
+            sett2 = sett2[0:5]
             com = compare(sett1, sett2)
             if com == "TIE":
                 return "none", one[1], two[1]
@@ -299,13 +304,15 @@ def compare_hands_helper(h1, h2):
         return "right", two[0], two[1]
 
 
-def compare_hands(h1, h2, river=None):
-    if river:
+def compare_hands(h1, h2, table=None):
+    if table:
         return compare_hands_helper(
-            h1.list_rep() + river.list_rep(),
-            h2.list_rep() + river.list_rep())
+            h1.list_rep() + table.list_rep(),
+            h2.list_rep() + table.list_rep())
     else:
         return compare_hands_helper(h1.list_rep(), h2.list_rep())
+
+print compare_hands_helper(['AC', 'KC', 'QC', '10C', '9D', '8D', '5D'], ['AC', 'KC', 'QC', '10C', '9D', '7D', '4D'])
 
 
 '''
