@@ -10,10 +10,6 @@ import random
 # stack size is smallest stack on the table
 # money in is money already on the table (small blind)
 # money required is how much to call
-#def play_preflop(hand, money_in, money_required, stack_size, position = False, small_blind = True):
-#  return money_required - money_in # this just calls
-    
-
 # write this later to include a random factor
 def randomPermute(value, random_factor):
   factor = 1
@@ -28,18 +24,21 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
   kRandomFactor = .1 # max value of random factor
   kUndercut = .33 # chance that hero bets small with a really good hand
   kLimp = .2 # chance that hero limps in with a poor hand
-  kGoodHand = .075 # really good hand differential
+  kGoodHand = .1 # really good hand differential
+  kBetFactor = 4
   kConstantBetFactor = .75
-  kBetFactor = 9 
   kCallPercent = .3 # percent of big blind that the raise is for us just to call
-  kLowHandFactor = .1
-  kLowHandConstant = .035 # makes it more likely to play jacks and 10s
-  kReallyGoodRatio = .55
+  kLowHandConstant = .08 # makes it more likely to play beter hands
+  kStretchFactor = 1.2
+  kGoodRatio = .60
+  kReallyGoodRatio = .66
   final_bet = 0
 
   hand_strength = preflop_sim.getPreflopStrength(hand)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
+
+  # correcting for advantageous position
   if position:
     win_ratio = win_ratio * (1 + kPositionAdvantage)
   else:
@@ -47,41 +46,43 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
 
   if small_blind:
     if win_ratio > cost_benefit_ratio:
-      # bluff by calling with a really good hand
-      if win_ratio - cost_benefit_ratio > kGoodHand:
-        if random.random() < kUndercut:
-          final_bet = money_required - money_in
-
-      bet = (win_ratio - cost_benefit_ratio) * kBetFactor * big_blind + big_blind * kConstantBetFactor + money_required - money_in
-      bet = randomPermute(bet, kRandomFactor)
-      if bet - money_required < kCallPercent * big_blind:
+      # 'bluff' by calling with a really good hand
+      if random.random() < kUndercut:
         final_bet = money_required - money_in
+
       else:
-        final_bet = int(bet) - money_in
+        bet = (win_ratio + kConstantBetFactor) * big_blind + money_required - money_in
+        bet = randomPermute(bet, kRandomFactor)
+        if bet - money_required < kCallPercent * big_blind:
+          final_bet = money_required - money_in
+        else:
+          final_bet = int(bet) - money_in
     else:
-      win_ratio = randomPermute(win_ratio, kLowHandFactor)
+      win_ratio = randomPermute(win_ratio, kRandomFactor)
       if win_ratio + kLowHandConstant > cost_benefit_ratio or random.random() < kLimp:
         final_bet = money_required - money_in
       else:
         final_bet = -1
   else:
-    if win_ratio > kReallyGoodRatio:
-      final_bet = stack_size - money_in
-      # do stuff here like bet a lot
-
-    # recalculate win ratio - be a little generous
-    if cost_benefit_ratio < win_ratio:
-      final_bet = money_required - money_in
-      # basically stretch this shit out - low hands only bet when cost_benefit_ratio is really low and high hands can be adjusted higher
-      #adjust it on a scale of like .3 to .7
-      # check if they're betting a lot - scary
-
+    # use random_permute to sometimes play slightly worse hands as good hands
+    if randomPermute(win_ratio, kRandomFactor) > kGoodRatio:
+      if random.random() < kUndercut:
+        final_bet = money_required - money_in
+      else:
+        tentative_bet = (win_ratio + kConstantBetFactor) * big_blind + win_ratio * (money_required - money_in) * kBetFactor
+        if tentative_bet < money_required - money_in:
+          if win_ratio > kReallyGoodRatio:
+            final_bet = (money_required - money_in) * 2
+          else:
+            final_bet = money_required - money_in
+        else:
+          final_bet = int(tentative_bet)
     else:
-      final_bet = -1
-
-    #if win_ratio > cost_benefit_ratio:
-    # risk that his cards are better than mine -> possible fold
-
+      # kStretchFactor to err on the side of calling a bit
+      if cost_benefit_ratio < randomPermute(win_ratio, kRandomFactor) * kStretchFactor:
+        final_bet = money_required - money_in
+      else:
+        final_bet = -1
 
   # this is just to make sure we're not overambitious with betting
   if final_bet > (stack_size - money_in):
@@ -103,10 +104,15 @@ def play_turn(hand, table, money_in, money_required, big_blind, stack_size, posi
 def play_river(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
   return money_required - money_in
 
+
+#central tenant #1 - aggressive AI is better than passive AI
+#central tenant #2 - AI is good because of randomness
+#central tenant #3 - AI is good because of monte carlo
+
 theDeck = cards.Deck()
 theDeck.shuffle()
 hand = cards.Hand()
 hand.add_card(theDeck.deal_card())
 hand.add_card(theDeck.deal_card())
 print hand
-print play_preflop(hand, 5, 10, 10, 300, False, True)
+print play_preflop(hand, 20, 40, 10, 300, False, False)

@@ -85,7 +85,7 @@ def getPreflopStrength(hand, filename = "preflop_values"):
 #  print getPreflopStrength(hand)
 
 #hand = cards.Hand()
-#hand.add_card(cards.Card('C','2'))
-#hand.add_card(cards.Card('D','2'))
+#hand.add_card(cards.Card('C','K'))
+#hand.add_card(cards.Card('D','K'))
 #print 'getting preflop for this'
 #print getPreflopStrength(hand)
