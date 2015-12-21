@@ -161,7 +161,7 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size,
               final_bet = money_required - money_in
           else:
             final_bet = int(tentative_bet)
-    else: 
+    else:
       # kStretchFactor to err on the side of calling a bit
       if cost_benefit_ratio < randomPermute(win_ratio, kRandomFactor):
         final_bet = money_required - money_in
