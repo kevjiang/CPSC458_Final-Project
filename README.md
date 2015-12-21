@@ -17,4 +17,10 @@ Eric Ho and Pranav Maddi
 python main.py
 ```
 
+The program will explain how to use it, but whenever you are presented with a prompt, you can bet within a range to call, check or raise. Any number lower than this will be considered a fold.
+
 ## Implementation
+
+monte carlo
+
+
