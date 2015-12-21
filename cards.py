@@ -73,8 +73,9 @@ class Card:
 
 class Hand:
 
-    def __init__(self):
+    def __init__(self, stack=100):
         self.cards = []
+        self.stack = stack
 
     def __str__(self):
         ans = ""
