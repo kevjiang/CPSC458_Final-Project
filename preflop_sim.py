@@ -39,11 +39,6 @@ def simulate(filename = "preflop_values", trials = 0):
     herohand = cards.Hand()
     adversaryhand = cards.Hand()
 
-    #herohand.add_card(cards.Card('C', '2'))
-    #herohand.add_card(cards.Card('S', '2'))
-    #theDeck.remove_specific_card('C', '2')
-    #theDeck.remove_specific_card('S', '2')
-    
     for j in range(2):
       herohand.add_card(theDeck.deal_card())
       adversaryhand.add_card(theDeck.deal_card())
@@ -55,18 +50,13 @@ def simulate(filename = "preflop_values", trials = 0):
     for j in range(5):
       table.add_card(theDeck.deal_card())
 
-    #print herohand
-    #print adversaryhand
-    #print table
-
     result = hands.compare_hands(herohand, adversaryhand, table)
-    print result
 
-    if result[0] == 'left':
+    if result == 'left':
       mat[indices[0]][indices[1]][0] += 1
-    elif result[0] == 'none':
+    elif result == 'none':
       mat[indices[0]][indices[1]][1] += 1
-    elif result[0] == 'right':
+    elif result == 'right':
       mat[indices[0]][indices[1]][2] += 1
       
   pickle.dump(mat, open(filename, "wb"))
@@ -83,11 +73,19 @@ def getPreflopStrength(hand, filename = "preflop_values"):
   s = chances[0] + chances[1] + chances[2]
   return [chances[0] / float(s), chances[1] / float(s), chances[2] / float(s)]
 
-#simulate("preflop_values", 100)
-#theDeck = cards.Deck()
-#theDeck.shuffle()
+#simulate("preflop_values", 2000000)
+#printMatrix()
+#for i in range(20):
+#  theDeck = cards.Deck()
+#  theDeck.shuffle()
+#  hand = cards.Hand()
+#  hand.add_card(theDeck.deal_card())
+#  hand.add_card(theDeck.deal_card())
+#  print hand
+#  print getPreflopStrength(hand)
+
 #hand = cards.Hand()
-#hand.add_card(theDeck.deal_card())
-#hand.add_card(theDeck.deal_card())
-#print hand
+#hand.add_card(cards.Card('C','K'))
+#hand.add_card(cards.Card('D','K'))
+#print 'getting preflop for this'
 #print getPreflopStrength(hand)
