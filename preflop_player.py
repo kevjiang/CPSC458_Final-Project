@@ -162,7 +162,7 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size,
               final_bet = money_required - money_in
           else:
             final_bet = int(tentative_bet)
-    else: 
+    else:
       # kStretchFactor to err on the side of calling a bit
       if cost_benefit_ratio < randomPermute(win_ratio, kRandomFactor) * kStretchFactor:
         final_bet = money_required - money_in
@@ -188,20 +188,20 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
 
   return money_required - money_in
 
+if __name__ == '__main__':
+    #central tenant #1 - aggressive AI is better than passive AI
+    #central tenant #2 - AI is good because of randomness
+    #central tenant #3 - AI is good because of monte carlo
 
-#central tenant #1 - aggressive AI is better than passive AI
-#central tenant #2 - AI is good because of randomness
-#central tenant #3 - AI is good because of monte carlo
+    theDeck = cards.Deck()
+    theDeck.shuffle()
+    hand = cards.Hand()
+    table = cards.Hand()
+    hand.add_card(theDeck.deal_card())
+    hand.add_card(theDeck.deal_card())
 
-theDeck = cards.Deck()
-theDeck.shuffle()
-hand = cards.Hand()
-table = cards.Hand()
-hand.add_card(theDeck.deal_card())
-hand.add_card(theDeck.deal_card())
+    for j in range(3):
+      table.add_card(theDeck.deal_card())
 
-for j in range(3):
-  table.add_card(theDeck.deal_card())
-
-print hand, table
-print play_afterflop(hand, table, 10, 20, 10, 300, True, False)
+    print hand, table
+    print play_afterflop(hand, table, 10, 20, 10, 300, True, False)
