@@ -21,10 +21,9 @@ if __name__ == '__main__':
  |/    /_/ /_/_____/_/  |_/_____//____/   \____/_/   (_)    |/
 
 
-            You are playing against a single opponent named Hero.
-            Each of you have $100.
+            Let's play some no limit texas hold'em!
 
-            The blinds are $1 and $2.
+            You are playing against a single opponent named Hero.
 
             To play, use the following format:
             These are your options:
@@ -44,9 +43,10 @@ if __name__ == '__main__':
                     ' dollars and hero has ' +  str(hero_stack) + ' dollars.'
 
             # start_game
-            gm = game.Game(human_stack, hero_stack)
+            gm = game.Game(human_stack, hero_stack, rounds)
             gm.play_game()
             human_stack, hero_stack = gm.stacks()
+            rounds += 1
 
         print 'game over'
 

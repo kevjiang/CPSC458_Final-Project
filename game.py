@@ -13,12 +13,15 @@ class Round:
     RIVER = 3
 
 class State(object):
-    def __init__(self, hero, human):
+    def __init__(self, hero, human, rounds):
         self.deck = cards.Deck()
         self.deck.shuffle()
         self.table = cards.Hand()
         self.pot = 0
-        self.big_blind, self.small_blind = random.sample((hero, human), 2)
+        if rounds % 2:
+            self.big_blind, self.small_blind = (hero, human)
+        else:
+            self.big_blind, self.small_blind = (human, hero)
         self.small_blind_val = 10
         self.big_blind_val = 20
         self.round = Round.PREFLOP
@@ -61,10 +64,11 @@ class Human(Player):
         '''
         out = None
         while out == None:
-            sys.stdout.write('\nPlayer descision {-1, [' + str(min_bet) +', ' + str(max_bet) + ']} > ')
+            sys.stdout.write('\nHuman decision {-1, [' + str(min_bet) +', ' + str(max_bet) + ']} -> ')
             out = self.parse_input(sys.stdin.readline())
+            print ''
             if out == None:
-                print 'Malformed descision'
+                print 'Malformed decision'
         return out
 
 class Hero(Player):
@@ -118,10 +122,10 @@ class Hero(Player):
 
 
 class Game(object):
-    def __init__(self, human_stack, hero_stack):
+    def __init__(self, human_stack, hero_stack, rounds):
         self.hero = Hero(cards.Hand(), hero_stack)
         self.human = Human(cards.Hand(), human_stack)
-        self.state = State(self.hero, self.human)
+        self.state = State(self.hero, self.human, rounds)
 
     def play_game(self):
         r = self.preflop()
