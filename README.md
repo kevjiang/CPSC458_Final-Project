@@ -8,7 +8,9 @@
 
 ## About
 
-Heads Up! is an bot that plays poker against you, created for Yale's Automated Descision Systems class in 2015.
+Heads Up! is an bot that plays no-limit poker against you, created for Yale's Automated Descision Systems class in 2015.
+
+The bot also explains it's decisions to you after each round to help you improve your game.
 
 Eric Ho and Pranav Maddi
 
@@ -22,5 +24,6 @@ The program will explain how to use it, but whenever you are presented with a pr
 ## Implementation
 
 monte carlo
+
 
 
