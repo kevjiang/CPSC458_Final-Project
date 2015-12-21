@@ -106,7 +106,7 @@ class Game(object):
             return None
 
     def get_move(self, player):
-        max_bet = min(self.hero.stack, self.human.stack)
+        max_bet = min(self.hero.stack + self.hero.escrow, self.human.stack + self.human.escrow)
         min_bet = self.state.required()
         bet_valid = False
         bet = 0
