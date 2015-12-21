@@ -19,10 +19,9 @@ class State(object):
         self.table = cards.Hand()
         self.pot = 0
         self.big_blind, self.small_blind = random.sample((hero, human), 2)
-        self.small_blind_val = 1
-        self.big_blind_val = 2
+        self.small_blind_val = 10
+        self.big_blind_val = 20
         self.round = Round.PREFLOP
-
     def __str__(self):
         return str((self.required(), self.pot, self.big_blind.stack, self.big_blind.escrow, self.small_blind.stack, self.small_blind.escrow))
 
@@ -73,15 +72,48 @@ class Hero(Player):
         Player.__init__(self, hand, stack)
         self.name = 'Hero'
     def get_next(self, state, human, min_bet, max_bet):
-        val = preflop_player.play_preflop(
-                self.hand, state.pot / 2 + self.escrow, state.required(),
-                state.big_blind_val, self.stack,
-                self == state.big_blind, self == state.small_blind)
-        logging.info((
-                val,
-                self.hand, state.pot / 2 + self.escrow, state.required(),
-                state.big_blind_val, self.stack,
-                self == state.big_blind, self == state.small_blind                ))
+        val = None
+        money_in = self.escrow + state.pot/2
+        money_required = max(self.escrow, human.escrow) + state.pot/2
+        if state.round == Round.PREFLOP:
+            val = preflop_player.play_preflop(
+                    self.hand,
+                    money_in,
+                    money_required,
+                    state.big_blind_val,
+                    self.stack,
+                    self == state.big_blind,
+                    self == state.small_blind)
+        elif state.round == Round.FLOP:
+            val = preflop_player.play_afterflop(
+                    self.hand,
+                    state.table,
+                    money_in,
+                    money_required,
+                    state.big_blind_val,
+                    self.stack,
+                    self == state.big_blind, # no
+                    self == state.small_blind)# no
+        elif state.round == Round.TURN:
+            val = preflop_player.play_turn(
+                    self.hand,
+                    state.table,
+                    money_in,
+                    money_required,
+                    state.big_blind_val,
+                    self.stack,
+                    self == state.big_blind, # no
+                    self == state.small_blind) # no
+        elif state.round == Round.RIVER:
+            val = preflop_player.play_river(
+                    self.hand,
+                    state.table,
+                    money_in,
+                    money_required,
+                    state.big_blind_val,
+                    self.stack,
+                    self == state.big_blind, # no
+                    self == state.small_blind) # no
         return val
 
 
@@ -93,6 +125,12 @@ class Game(object):
 
     def play_game(self):
         r = self.preflop()
+        if r != -1:
+            r = self.deal_and_play(3)
+        if r != -1:
+            r = self.deal_and_play(1)
+        if r != -1:
+            r = self.deal_and_play(1)
         if r != -1:
             self.end_game()
         return self.stacks()
@@ -106,7 +144,8 @@ class Game(object):
             return None
 
     def get_move(self, player):
-        max_bet = min(self.hero.stack + self.hero.escrow, self.human.stack + self.human.escrow)
+        other = self.other_player(player)
+        max_bet = min(player.stack, other.stack + other.escrow)
         min_bet = self.state.required()
         bet_valid = False
         bet = 0
@@ -129,6 +168,8 @@ class Game(object):
             print player.name + ' has called'
         else:
             print player.name + ' raised to ' + str(bet)
+
+
         return (bet, min_bet)
 
     def preflop(self):
@@ -154,18 +195,20 @@ class Game(object):
         person = self.state.small_blind
         move, min_bet = self.get_move(person)
         logging.info(move)
-        raised = False
-        while move > min_bet:
+        bb_gone = False
+        if move < min_bet:
+            return -1
+        while (not bb_gone) or move > min_bet:
             person = self.other_player(person)
             move, min_bet = self.get_move(person)
+            bb_gone = True
         if move < min_bet:
             return -1
 
         logging.info(self.state)
         self.state.clear_ecrows()
         logging.info(('hi', str(self.state), self.human.stack, self.hero.stack))
-
-
+        self.state.round += 1
 
     def fold(self, loser):
         print loser.name + ' has folded.'
@@ -203,110 +246,30 @@ class Game(object):
     def stacks(self):
         return (self.human.stack, self.hero.stack)
 
+    def deal_and_play(self, n=1):
+        for i in xrange(n):
+            self.state.table.add_card(self.state.deck.deal_card())
 
-'''
-    preflop alg:
-        start with big blind: bb
+        print 'The cards', self.state.table, 'are now on the table.'
 
-        if bb call:
-            done.
-        if bb raise:
-            if sb raise:
-                if bb raise:
-                    ...
-            else if sb call
-                done
-            else
-                fold
-        else
+        # big blind move first
+        person = self.state.big_blind
+        move, min_bet = self.get_move(person)
+        logging.info(move)
+        sb_gone = False
+        if move < min_bet:
+            return -1
+        while (not sb_gone) or move > min_bet:
+            person = self.other_player(person)
+            move, min_bet = self.get_move(person)
+            sb_gone = True
+        if move < min_bet:
+            return -1
 
-
-
-        on : bb
-
-        resp = X.resp
-        while response is raise
-            resp = X.resp
-            X = other one
-        if resp is call:
-            if resp is check:
-                while response is raise
-                    resp = X.resp
-                    X = other one
-                ...
-            ...
-        if resp is fold:
-            ...
-
-
-pot
-required
-stacks
-bet
-
-'''
-#
-#     def flop(self):
-#         self.state = FLOP
-#         for i in range(3):
-#             self.table.add_card(self.theDeck.deal_card())
-#         # bb first
-#
-#     def turn(self):
-#         self.state = TURN
-#         self.table.add_card(self.theDeck.deal_card())
-#         # bb first
-#
-#     def river(self):
-#         self.state = RIVER
-#         self.table.add_card(self.theDeck.deal_card())
-#         # bb first
-#
-#     def eval(self):
-#         return hands.compare_hands(self.player, self.hero, self.table)
-#
-#     def end_game(self):
-#         res = hands.compare_hands(self.player, self.hero, self.table)
-#         if res == 'left':
-#             self.player += self.pot
-#             return 'You won with a ' + res[1]
-#         elif res == 'right':
-#             self.hero += self.pot
-#             return 'Hero won with a ' + res[1]
-#         else:
-#             self.player += self.pot/2
-#             self.hero += self.pot/2
-#             return 'The game was a tie.'
-#         return res
-
-
-
-def basic_game():
-    theDeck = cards.Deck()
-    theDeck.shuffle()
-    player = cards.Hand()
-    big = cards.Hand()
-    table = cards.Hand()
-
-# Preflop
-    big.add_card(theDeck.deal_card())
-    big.add_card(theDeck.deal_card())
-    small.add_card(theDeck.deal_card())
-    small.add_card(theDeck.deal_card())
-
-# Flop
-    for i in range(3):
-        table.add_card(theDeck.deal_card())
-    logging.info(str(['flop', small.list_rep(), big.list_rep(), table.list_rep()]))
-
-# Turn
-    table.add_card(theDeck.deal_card())
-    logging.info(str(['turn', small.list_rep(), big.list_rep(), table.list_rep()]))
-
-# River
-    table.add_card(theDeck.deal_card())
-    logging.info(str(['table', small.list_rep(), big.list_rep(), table.list_rep()]))
-    return hands.compare_hands(small, big, table)
+        logging.info(self.state)
+        self.state.clear_ecrows()
+        logging.info(('hi', str(self.state), self.human.stack, self.hero.stack))
+        self.state.round += 1
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')

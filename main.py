@@ -34,8 +34,8 @@ if __name__ == '__main__':
                 [min_bet ... max_bet]     --    raise or call
         '''
 
-        human_stack = 4
-        hero_stack = 4
+        human_stack = 300
+        hero_stack = 300
         while hero_stack > 0 and human_stack > 0:
             print '================================================================================ '
             print '             Round ' + str(rounds)

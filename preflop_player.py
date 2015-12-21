@@ -41,7 +41,7 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
 
   hand_strength = preflop_sim.getPreflopStrength(hand)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
-  cost_benefit_ratio = (money_required - money_in) / float(money_required + 1)
+  cost_benefit_ratio = (money_required - money_in) / float(money_required)
 
   # correcting for advantageous position
   if position:
