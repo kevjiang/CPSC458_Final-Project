@@ -32,6 +32,63 @@ def checkstraight(h):
       straightchance += 1
   return straightchance
 
+def getHandCode(herohand, table):
+  handscore = 0
+  herohandplus = herohand.list_rep() + table.list_rep()
+  evaluated = hands.evaluate_hand(herohandplus)
+
+  if evaluated[2] > 3:
+    handscore = evaluated[2]
+  elif evaluated[2] == 3:
+    high_pair = evaluated[1][0]
+    highest_card = True
+    for e in evaluated[1]:
+      if high_pair < e:
+        highest_card = False
+    if highest_card:
+      handscore = features['2-pair-good']
+    else:
+      handscore = features['2-pair-bad']
+  elif evaluated[2] == 2:
+    high_pair = evaluated[1][0]
+    num_card_greater = 0
+    for e in evaluated[1]:
+      if high_pair < e:
+        num_card_greater += 1
+    
+    if num_card_greater == 0:
+      handscore = features['high-pair']
+    elif num_card_greater == 1:
+      handscore = features['middle-pair']
+    else:
+      handscore = features['low-pair']
+  elif evaluated[2] == 1:
+    straightchance = checkstraight(herohandplus)
+    # evaluating for flush draw
+    if checkflush4(herohandplus):
+      handscore = features['flush-draw-4']
+    # evaluating for straight draw
+    elif straightchance >= 2:
+      handscore = features['straight-draw-good']
+    elif straightchance == 1:
+      handscore = features['straight-draw-bad']
+    else:
+      hand_strength = preflop_sim.getPreflopStrength(herohand)
+      win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
+
+      if win_ratio > REALLYGOODHAND:
+        handscore = features['really-good-high']
+      elif win_ratio > GOODHAND:
+        handscore = features['good-high']
+      elif win_ratio > MIDDLEHAND:
+        handscore = features['middle-high']
+      elif win_ratio > BADHAND:
+        handscore = features['bad-high']
+      else: 
+        handscore = features['really-bad-high']
+
+  return handscore
+
 def simulate(filename = "postflop_values", trials = 0):
   #mat = []
   #for j in range(19):
@@ -53,59 +110,7 @@ def simulate(filename = "postflop_values", trials = 0):
     for j in range(3):
       table.add_card(theDeck.deal_card())
 
-    handscore = 0
-    herohandplus = herohand.list_rep() + table.list_rep()
-    evaluated = hands.evaluate_hand(herohandplus)
-
-    if evaluated[2] > 3:
-      handscore = evaluated[2]
-    elif evaluated[2] == 3:
-      high_pair = evaluated[1][0]
-      highest_card = True
-      for e in evaluated[1]:
-        if high_pair < e:
-          highest_card = False
-      if highest_card:
-        handscore = features['2-pair-good']
-      else:
-        handscore = features['2-pair-bad']
-    elif evaluated[2] == 2:
-      high_pair = evaluated[1][0]
-      num_card_greater = 0
-      for e in evaluated[1]:
-        if high_pair < e:
-          num_card_greater += 1
-      
-      if num_card_greater == 0:
-        handscore = features['high-pair']
-      elif num_card_greater == 1:
-        handscore = features['middle-pair']
-      else:
-        handscore = features['low-pair']
-    elif evaluated[2] == 1:
-      straightchance = checkstraight(herohandplus)
-      # evaluating for flush draw
-      if checkflush4(herohandplus):
-        handscore = features['flush-draw-4']
-      # evaluating for straight draw
-      elif straightchance >= 2:
-        handscore = features['straight-draw-good']
-      elif straightchance == 1:
-        handscore = features['straight-draw-bad']
-      else:
-        hand_strength = preflop_sim.getPreflopStrength(herohand)
-        win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
-
-        if win_ratio > REALLYGOODHAND:
-          handscore = features['really-good-high']
-        elif win_ratio > GOODHAND:
-          handscore = features['good-high']
-        elif win_ratio > MIDDLEHAND:
-          handscore = features['middle-high']
-        elif win_ratio > BADHAND:
-          handscore = features['bad-high']
-        else: 
-          handscore = features['really-bad-high']
+    handscore = getHandCode(herohand, table)
 
     # evaluating results of hand
     for j in range(2):
@@ -122,6 +127,13 @@ def simulate(filename = "postflop_values", trials = 0):
 
   print mat
   pickle.dump(mat, open(filename, "wb"))
+
+def getStrength(hand, table, filename = "postflop_values"):
+  mat = pickle.load(open(filename, "rb"))
+  code = getHandCode(hand, table)
+  chances = mat[code]
+  s = chances[0] + chances[1] + chances[2]
+  return [chances[0] / float(s), chances[1] / float(s), chances[2] / float(s)]
 
 def printMatrix(filename = "postflop_values"):
   mat = pickle.load(open(filename, "rb"))

@@ -1,6 +1,9 @@
 import cards
 import hands
 import preflop_sim
+import afterflop_sim
+import afterturn_sim
+import afterriver_sim
 
 import random
 
@@ -96,12 +99,25 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size,
   # find straight and flush outs
   # find what i have w/ win percentages
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
+
+  hand_strength = afterflop_sim.getStrength(hand, table)
+  win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
+  print win_ratio
+  
   return money_required - money_in
 
 def play_turn(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
+  hand_strength = afterturn_sim.getStrength(hand, table)
+  win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
+  print win_ratio
+
   return money_required - money_in
 
 def play_river(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
+  hand_strength = afterriver_sim.getStrength(hand, table)
+  win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
+  print win_ratio
+
   return money_required - money_in
 
 
@@ -109,10 +125,15 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
 #central tenant #2 - AI is good because of randomness
 #central tenant #3 - AI is good because of monte carlo
 
-theDeck = cards.Deck()
-theDeck.shuffle()
-hand = cards.Hand()
-hand.add_card(theDeck.deal_card())
-hand.add_card(theDeck.deal_card())
-print hand
-print play_preflop(hand, 20, 40, 10, 300, False, False)
+#theDeck = cards.Deck()
+#theDeck.shuffle()
+#hand = cards.Hand()
+#table = cards.Hand()
+#hand.add_card(theDeck.deal_card())
+#hand.add_card(theDeck.deal_card())
+#
+#for j in range(5):
+#  table.add_card(theDeck.deal_card())
+#
+#print hand, table
+#print play_river(hand, table, 20, 40, 10, 300, False, False)
