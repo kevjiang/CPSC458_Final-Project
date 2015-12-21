@@ -1,7 +1,7 @@
 import logging
 import itertools
 from collections import Counter
- 
+
 # gets card value from  a hand. converts A to 14,  is_seq function will
 # convert the 14 to a 1 when necessary to evaluate A 2 3 4 5 straights
 def convert_tonums(h, nums={'T': 10, 'J': 11, 'Q': 12, 'K': 13, "A": 14}):
@@ -9,11 +9,11 @@ def convert_tonums(h, nums={'T': 10, 'J': 11, 'Q': 12, 'K': 13, "A": 14}):
         if (h[x][0]) in nums.keys():
             h[x] = str(nums[h[x][0]]) + h[x][1]
     return h
- 
+
 def Most_Common(lst):
     data = Counter(lst)
     return data.most_common(1)[0]
- 
+
 def get_high(h):
     return list(sorted([int(x[:-1])
                         for x in convert_tonums(h)], reverse=True))[:5]
@@ -27,7 +27,7 @@ def contains_seq(h):
     h = list(set(h)) # remove duplicate numbers
     if len(h) < 5:
         return False
- 
+
     h = list(sorted(h))[::-1] # sort high to low
     ref = True
     for i in range(0, len(h)-4):
@@ -39,13 +39,13 @@ def contains_seq(h):
         # if the hand is a straight then it's the highest, set r equal to it and stop looking
         if ref:
             return True, h[i:i+5]
- 
+
     aces = [i for i in h if str(i) == "14"]
     if len(aces) == 1:
         for x in range(len(h)):
             if str(h[x]) == "14":
                 h[x] = 1
- 
+
     h = list(sorted(h))[::-1]
     for i in range(0, len(h)-4):
         ref = True
@@ -56,9 +56,9 @@ def contains_seq(h):
         if ref:
             high = h[i]
             return True, h[i:i+5]
- 
+
     return False
- 
+
 # assumes the hand you get is 7 card and already sorted from high to low
 def contains_flush(h):
     # suit is the last number in each element of the list
@@ -75,7 +75,7 @@ def contains_flush(h):
         return True, nh
     else:
         return False
- 
+
 # is straight flush
 # if a hand is a straight and a flush return True and the highest card value
 def contains_straightflush(h):
@@ -85,7 +85,7 @@ def contains_straightflush(h):
         if contains_seq(nh):
             return True, contains_seq(nh)[1]
     return False
- 
+
 # if the most common element occurs 4 times then it is a four of a kind
 # returns True and the value of the four of a
 def contains_fourofakind(h):
@@ -101,7 +101,7 @@ def contains_fourofakind(h):
         return True, hand
     else:
         return False
- 
+
 # if the most common element occurs 3 times then it is a three of a kind
 # returns true and the value of the highest 3 of a kind
 def contains_threeofakind(h):
@@ -116,9 +116,9 @@ def contains_threeofakind(h):
         h.remove(second)
         third = max(h)
         return True, [a[0],a[0],a[0],second,third]
- 
+
     return False
- 
+
 # run after 4 of a kind so there can't be 4 of the same card -- therefore must be at least 3 distinct numbers
 # take first 3 common elements and if first is 3 and second or third is 2 then full house
 # returns True and the values of the full house
@@ -138,7 +138,7 @@ def contains_fullhouse(h):
                 return True, [b[0], b[0], b[0], a[0], a[0]]
         return True, [a[0], a[0], a[0], b[0], b[0]]
     return False
- 
+
 # if the first 2 most common elements have counts of 2 and 2 then it is a
 # two pair
 def contains_twopair(h):
@@ -166,7 +166,7 @@ def contains_twopair(h):
         h.remove(b[0])
         return True, [a[0], a[0], b[0], b[0], max(h)]
     return False
- 
+
 # if the first most common element is 2 then it is a pair
 # DISCLAIMER: this will return true if the hand is a two pair, but this
 # should not be a conflict because is_twopair is always evaluated and
@@ -176,7 +176,7 @@ def contains_pair(h):
     h = [int(a) for a in h]
     data = Counter(h)
     a = data.most_common(1)[0]
- 
+
     if str(a[1]) == '2':
         h = list(set(h))
         h.remove(a[0])
@@ -184,28 +184,28 @@ def contains_pair(h):
         return True, [a[0], a[0], h[0], h[1], h[2]]
     else:
         return False
- 
+
 # get the high card
- 
+
 # FOR HIGH CARD or ties, this function compares two hands by ordering the
 # hands from highest to lowest and comparing each card and returning when
 # one is higher then the other
 def compare(xs, ys):
     xs, ys = list(sorted(xs, reverse=True)), list(sorted(ys, reverse=True))
- 
+
     for i, c in enumerate(xs):
         if ys[i] > c:
             return 'RIGHT'
         elif ys[i] < c:
             return 'LEFT'
- 
+
     return "TIE"
- 
- 
+
+
 # categorized a hand based on previous functions
 # returns the entire hand
 def evaluate_hand(h):
- 
+
     if contains_straightflush(h):
         return "STRAIGHT FLUSH", contains_straightflush(h)[1], 9 # returns the cards
     elif contains_fourofakind(h):
@@ -228,7 +228,7 @@ def evaluate_hand(h):
         return "PAIR", contains_pair(h)[1], 2
     else:
         return "HIGH CARD", get_high(h), 1
- 
+
 # takes two lists and finds the one with the larger value
 # returns "left" if lst1 is bigger, "right" if lst2 is bigger, "none" otherwise
 def find_bigger_list(lst1, lst2):
@@ -240,19 +240,26 @@ def find_bigger_list(lst1, lst2):
         else:
             return "right"
     return "none"
- 
+
 # function that compares two hands
 def compare_hands_helper(h1, h2):
     one, two = evaluate_hand(h1), evaluate_hand(h2)
- 
+    out =  None
     if one[0] == two[0]:
-        return find_bigger_list(one[1], two[1])
+        out = find_bigger_list(one[1], two[1])
     elif one[2] > two[2]:
-        return "left"
+        out = "left"
     else:
-        return "right"
- 
- 
+        out = "right"
+    if out == 'left':
+        return ('left',  one[0])
+    elif out == 'right':
+        return ('right', two[0])
+    else:
+        return ('none', one[0])
+
+
+
 def compare_hands(h1, h2, table=None):
     if table:
         return compare_hands_helper(
@@ -260,9 +267,8 @@ def compare_hands(h1, h2, table=None):
             h2.list_rep() + table.list_rep())
     else:
         return compare_hands_helper(h1.list_rep(), h2.list_rep())
- 
-'''
-a = ['QD', 'KD', '9D', 'JD', 'TD']
-b = ['JS', '8S', 'KS', 'AS', 'QS']
-print compare_hands(a,b)
-'''
+
+if __name__ == '__main__':
+    a = ['QD', 'KD', '9D', 'JD', 'TD']
+    b = ['JS', '8S', 'KS', 'AS', 'QS']
+    print compare_hands_helper(a,b)

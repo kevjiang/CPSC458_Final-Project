@@ -41,7 +41,7 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
 
   hand_strength = preflop_sim.getPreflopStrength(hand)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
-  cost_benefit_ratio = (money_required - money_in) / float(money_required)
+  cost_benefit_ratio = (money_required - money_in) / float(money_required + 1)
 
   # correcting for advantageous position
   if position:
@@ -242,7 +242,7 @@ def play_turn(hand, table, money_in, money_required, big_blind, stack_size, posi
               final_bet = money_required - money_in
           else:
             final_bet = int(tentative_bet)
-    else: 
+    else:
       if cost_benefit_ratio < randomPermute(win_ratio, kRandomFactor) * kStretchFactor - kRiskFactor:
         final_bet = money_required - money_in
       else:
@@ -319,7 +319,7 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
               final_bet = money_required - money_in
           else:
             final_bet = int(tentative_bet)
-    else: 
+    else:
       if cost_benefit_ratio < randomPermute(win_ratio, kRandomFactor) * kStretchFactor:
         final_bet = money_required - money_in
       else:

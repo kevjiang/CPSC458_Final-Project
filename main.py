@@ -7,73 +7,49 @@ import game
 import preflop_sim
 import random
 
-def parse_input(var):
-    v = var.strip().split()
-    if len(v) == 1:
-        if v[0] == 'check':
-            return game.Choice.CHECK
-        elif v[0] == 'fold':
-            return game.Choice.FOLD
-    elif len(v) == 2:
-        if v[0] == 'bet':
-            n = int(v[1])
-            if n > 0 and n < min(hero_bankroll, player_bankroll):
-                return (game.Choice.BET, n)
-    raise ValueError('The input is invalid.')
 
 if __name__ == '__main__':
-    rounds = 0
-    player_bankroll = 100
-    hero_bankroll = 100
+    # logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+    logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
+    rounds = 1
     try:
         print '''
-            This is the heads up poker player!
+           __  ___________    ____  _____    __  ______  __
+  __/|_   / / / / ____/   |  / __ \/ ___/   / / / / __ \/ /  __/|_
+ |    /  / /_/ / __/ / /| | / / / /\__ \   / / / / /_/ / /  |    /
+/_ __|  / __  / /___/ ___ |/ /_/ /___/ /  / /_/ / ____/_/  /_ __|
+ |/    /_/ /_/_____/_/  |_/_____//____/   \____/_/   (_)    |/
 
-            You are playing against a single opponent.
+
+            You are playing against a single opponent named Hero.
             Each of you have $100.
 
-            The blinds are 1, 2.
-
-            You are the small blind.
+            The blinds are $1 and $2.
 
             To play, use the following format:
             These are your options:
-                check           -- this calls or checks
-                fold            -- this folds your hand
-                bet number      -- this bets (number) dollars
+
+                anything < min_bet        --    fold
+                0                         --    check
+                [min_bet ... max_bet]     --    raise or call
         '''
 
-        print ' You have ' + player_bankroll +  ' dollars and hero has ' +  hero_bankroll + ' dollars.'
+        human_stack = 100
+        hero_stack = 100
+        while hero_stack > 0 and human_stack > 0:
+            print '================================================================================ '
+            print '             Round ' + str(rounds)
 
-        # start_game
-        gm = game.Game(player_bankroll, hero_bankroll)
-        gm.preflop()
-        # fold, endgame.
+            print ' You have ' + str(human_stack) +  \
+                    ' dollars and hero has ' +  str(hero_stack) + ' dollars.'
 
-        sys.stdout.write('\ncheck/fold/bet > ')
-        val = parse_input(sys.stdin.readline())
+            # start_game
+            gm = game.Game(human_stack, hero_stack)
+            gm.play_game()
+            human_stack, hero_stack = gm.stacks()
 
-        gm.flop()
-        print 'The table contains: ', gm.table
+        print 'game over'
 
-        sys.stdout.write('\nFlop choice    > ')
-        val = parse_input(sys.stdin.readline())
-
-        gm.turn()
-        print 'The table contains: ', gm.table
-
-        sys.stdout.write('\nTurn choice    > ')
-        val = parse_input(sys.stdin.readline())
-
-        gm.river()
-        print 'The table contains: ', gm.table
-
-        sys.stdout.write('\nRiver choice   > ')
-        val = parse_input(sys.stdin.readline())
-
-        print gm.end_game()
-
-        player_bankroll, hero_bankroll = gm.bankrolls()
 
 
     except KeyboardInterrupt:
