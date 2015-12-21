@@ -1,8 +1,3 @@
-# CPSC458_Final-Project
-Eirc Ho and Pranav Maddi
-
-Yale 2015
-
 ```
            __  ___________    ____  _____    __  ______  __
   __/|_   / / / / ____/   |  / __ \/ ___/   / / / / __ \/ /  __/|_
@@ -13,7 +8,9 @@ Yale 2015
 
 ## About
 
-This is an automated descision making system that plays Heads up poker against you.
+Heads Up! is an bot that plays poker against you, created for Yale's Automated Descision Systems class in 2015.
+
+Eric Ho and Pranav Maddi
 
 ## Usage
 ```
