@@ -6,7 +6,6 @@ import afterturn_sim
 import afterriver_sim
 
 import random
-import logging
 
 kPositionAdvantage = .025
 kPositionDisadvantage = .025
@@ -39,7 +38,6 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
   kGoodRatio = .60
   kReallyGoodRatio = .66
   final_bet = 0
-  logging.info(('smallblind', small_blind))
 
   hand_strength = preflop_sim.getPreflopStrength(hand)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
