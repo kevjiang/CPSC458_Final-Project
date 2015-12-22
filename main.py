@@ -43,13 +43,27 @@ if __name__ == '__main__':
                 anything < min_bet        --    fold
                 0                         --    check
                 [min_bet ... max_bet]     --    raise or call
+
+            In case you are unfamiliar with poker, here is a descrption of
+            each of the values shown to you:
+
+                Human stack:    The amount of money you have to play with
+                Human escrow:   The amount of money you've bet this cycle
+                Hero stack:     The amount of money Hero has to play with
+                Hero escrow:    The amount of money Hero has bet this cycle
+                Pot size:       The money wagered in previous betting cycles
+                Human hand:     Your hand in the form <suit><value>
+                Table cards:    The shared cards in the form <suit><value>
+                To call:        The minimum you have to wager to stay in the game
+
         '''
 
         human_stack = 300
         hero_stack = 300
         blinds = (5, 10)
 
-        print 'The big blind is', blinds[1], 'and the little blind is', blinds[0]
+        print '\
+            The big blind is', blinds[1], 'and the little blind is', blinds[0]
         while hero_stack > 0 and human_stack > 0:
             print '================================================================================ '
             print '             Round ' + str(rounds)
