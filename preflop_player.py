@@ -15,7 +15,7 @@ kRandomFactor = .1 # max value of random factor
 # returns bet size of small blind, with -1 being fold
 # small_blind is true if small blind, false if big blind or reraise
 # position is False if small blind player, True if big blind player
-# stack size is smallest stack on the table
+# max_bet is maximum bet allowed
 # money in is money already on the table (small blind)
 # money required is how much to call
 # write this later to include a random factor
@@ -26,7 +26,7 @@ def randomPermute(value, random_factor):
 
   return (random.random() * random_factor * factor + 1) * value
 
-def play_preflop(hand, money_in, money_required, big_blind, stack_size, position = False, small_blind = True):
+def play_preflop(hand, money_in, money_required, big_blind, max_bet, position = False, small_blind = True):
   kUndercut = .33 # chance that hero bets small with a really good hand
   kLimp = .2 # chance that hero limps in with a poor hand
   kGoodHand = .1 # really good hand differential
@@ -35,7 +35,7 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
   kCallPercent = .3 # percent of big blind that the raise is for us just to call
   kLowHandConstant = .08 # makes it more likely to play beter hands
   kStretchFactor = 1.2
-  kGoodRatio = .60
+  kGoodRatio = .56
   kReallyGoodRatio = .66
   final_bet = 0
 
@@ -49,7 +49,16 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
   else:
     win_ratio = win_ratio * (1 - kPositionDisadvantage)
 
+  print 'calling preflop play'
+  print 'money in is ' + str(money_in)
+  print 'money required is ' + str(money_required)
+  print 'stack size is ' + str(max_bet)
+  print 'position is ' + str(position)
+  print 'small_blind is ' + str(position)
+  print win_ratio
+
   if small_blind:
+    print 'small blind'
     if win_ratio > cost_benefit_ratio:
       # 'bluff' by calling with a really good hand
       if random.random() < kUndercut:
@@ -71,6 +80,7 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
   else:
     # use random_permute to sometimes play slightly worse hands as good hands
     if randomPermute(win_ratio, kRandomFactor) > kGoodRatio:
+      print 'good ratio'
       if random.random() < kUndercut:
         final_bet = money_required - money_in
       else:
@@ -89,14 +99,16 @@ def play_preflop(hand, money_in, money_required, big_blind, stack_size, position
       else:
         final_bet = -1
 
+  print 'final bet is ' + str(final_bet)
+
   # this is just to make sure we're not overambitious with betting
-  if final_bet > (stack_size - money_in):
-    return stack_size - money_in
+  if final_bet > max_bet:
+    return max_bet
   else:
     return final_bet
 
 # note: money_in == money_required when first_bet == True
-def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
+def play_afterflop(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
   kUndercut = .4 # chance that hero bets small with a really good hand
   kReallyGoodRatio = .7
   kBetRatio = .6 # win percentage that needs to be exceeded to bet first
@@ -112,6 +124,8 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size,
   hand_strength = afterflop_sim.getStrength(hand, table)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
+
+  print 'small_blind is ' + str(position)
 
   # correcting for advantageous position
   if position:
@@ -168,14 +182,14 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, stack_size,
       else:
         final_bet = -1
 
-  if final_bet > (stack_size - money_in):
-    return stack_size - money_in
+  if final_bet > max_bet:
+    return max_bet
   else:
     return final_bet
 
 # as play goes on, the opponent will probably have a better hand since they're still playing
 # we play more cautiously as a result
-def play_turn(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
+def play_turn(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
   kUndercut = .4 # chance that hero bets small with a really good hand
   kReallyGoodRatio = .75
   kBetRatio = .65 # win percentage that needs to be exceeded to bet first
@@ -193,6 +207,8 @@ def play_turn(hand, table, money_in, money_required, big_blind, stack_size, posi
   hand_strength = afterturn_sim.getStrength(hand, table)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
+
+  print 'small_blind is ' + str(position)
 
   # correcting for advantageous position
   if position:
@@ -248,12 +264,12 @@ def play_turn(hand, table, money_in, money_required, big_blind, stack_size, posi
       else:
         final_bet = -1
 
-  if final_bet > (stack_size - money_in):
-    return stack_size - money_in
+  if final_bet > max_bet:
+    return max_bet
   else:
     return final_bet
 
-def play_river(hand, table, money_in, money_required, big_blind, stack_size, position = False, first_bet = True):
+def play_river(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
   kUndercut = .4 # chance that hero bets small with a really good hand
   kReallyGoodRatio = .775
   kBetRatio = .675 # win percentage that needs to be exceeded to bet first
@@ -270,6 +286,8 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
   hand_strength = afterriver_sim.getStrength(hand, table)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
+
+  print 'small_blind is ' + str(position)
 
   # correcting for advantageous position
   if position:
@@ -325,8 +343,8 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
       else:
         final_bet = -1
 
-  if final_bet > (stack_size - money_in):
-    return stack_size - money_in
+  if final_bet > max_bet:
+    return max_bet
   else:
     return final_bet
 
@@ -341,8 +359,8 @@ def play_river(hand, table, money_in, money_required, big_blind, stack_size, pos
 #hand.add_card(theDeck.deal_card())
 #hand.add_card(theDeck.deal_card())
 #
-#for j in range(5):
+#for j in range(3):
 #  table.add_card(theDeck.deal_card())
 #
 #print hand, table
-#print play_river(hand, table, 30, 50, 10, 300, True, False)
+#print play_preflop(hand, 5, 300, 10, 300, False, False)
