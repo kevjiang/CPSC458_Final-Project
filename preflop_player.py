@@ -29,7 +29,7 @@ class Play(object):
   def __init__(self):
     self.explanation = ""
 
-  def play_preflop(hand, money_in, money_required, big_blind, max_bet, position = False, small_blind = True):
+  def play_preflop(self, hand, money_in, money_required, big_blind, max_bet, position = False, small_blind = True):
     kUndercut = .33 # chance that hero bets small with a really good hand
     kLimp = .2 # chance that hero limps in with a poor hand
     kGoodHand = .1 # really good hand differential
@@ -100,7 +100,7 @@ class Play(object):
     return final_bet
 
   # note: money_in == money_required when first_bet == True
-  def play_afterflop(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
+  def play_afterflop(self, hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
     kUndercut = .4 # chance that hero bets small with a really good hand
     kReallyGoodRatio = .7
     kBetRatio = .6 # win percentage that needs to be exceeded to bet first
@@ -182,7 +182,7 @@ class Play(object):
 
   # as play goes on, the opponent will probably have a better hand since they're still playing
   # we play more cautiously as a result
-  def play_turn(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
+  def play_turn(self, hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
     kUndercut = .4 # chance that hero bets small with a really good hand
     kReallyGoodRatio = .75
     kBetRatio = .65 # win percentage that needs to be exceeded to bet first
@@ -263,7 +263,7 @@ class Play(object):
 
     return final_bet
 
-  def play_river(hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
+  def play_river(self, hand, table, money_in, money_required, big_blind, max_bet, position = False, first_bet = True):
     kUndercut = .4 # chance that hero bets small with a really good hand
     kReallyGoodRatio = .775
     kBetRatio = .675 # win percentage that needs to be exceeded to bet first
