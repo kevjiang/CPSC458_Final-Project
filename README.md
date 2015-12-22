@@ -23,9 +23,15 @@ Eric Ho and Pranav Maddi
 python main.py
 ```
 
-The program will explain how to use it, but whenever you are presented with a prompt, you can bet within a range to call, check or raise. Any number lower than this will be considered a fold.
+The program explains how to use it in the consle, but whenever you are presented with a prompt, you can bet within a range to call, check or raise. Any number lower than this will be considered a fold.
 
-## Implementation
+Note that this should work correctly on the zoo machines without dependencies.
+
+## Game overview
+
+We wrote the Heads Up Texas Hold'em gameply from scratch. This includes having a system for managing cards, players, rounds of play, blinds, and enforcing betting ordering / rules. The cards class is similar to the one used for hw1's blackjack player, and we extend it to hold poker hands. Using these, we wrote methods to evalute and compare the hierarchy of poker hand strengths (high card, pair, two pair, three of a kind, straight, flush, etc.) The classes manage swtiching the blinds for each round, as well as maintainig the player stacks between them. Within each round, cards are dealt to the table hand, and players make matching bets contributing to the pot. While simple in theory, executing this correctly while handling edge cases resulting from betting procedure and the fold / check / call / raise options is tricky.
+
+## Decision Engine
 
 To generate CPU hand strength at any given time, we ran 4 Monte Carlo simulations for at least 1 million simulations each. You can view the results of the simulations in the files preflop\_sim.py, afterflop\_sim.py, afterturn\_sim.py, and afterriver\_sim.py by calling printMatrix(). 
 
