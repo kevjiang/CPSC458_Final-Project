@@ -9,8 +9,8 @@ import random
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
-    logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+    # logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
     rounds = 1
     try:
         print '''
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             print '================================================================================ '
             print '             Round ' + str(rounds)
 
-            print ' You have ' + str(human_stack) +  \
+            print 'You have ' + str(human_stack) +  \
                     ' dollars and hero has ' +  str(hero_stack) + ' dollars.'
 
             # start_game

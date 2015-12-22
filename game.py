@@ -59,6 +59,7 @@ class Human(Player):
         if len(v) != 1:
             return None
         return int(v[0])
+
     def get_next(self, state, hero, min_bet, max_bet):
         # print the table state
         '''
@@ -81,6 +82,7 @@ class Hero(Player):
         val = None
         money_in = self.escrow + state.pot/2
         money_required = max(self.escrow, human.escrow) + state.pot/2
+        logging.info(('first bet', state.first_bet))
         if state.round == Round.PREFLOP:
             val = preflop_player.play_preflop(
                     self.hand,
