@@ -30,7 +30,7 @@ if __name__ == '__main__':
 /_ __|  / __  / /___/ ___ |/ /_/ /___/ /  / /_/ / ____/_/  /_ __|
  |/    /_/ /_/_____/_/  |_/_____//____/   \____/_/   (_)    |/
 
-        ''' + bcolors.ENDC
+        ''' + bcolors.ENDC + ''
 
         print '''
             Let's play some no limit texas hold'em!
