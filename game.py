@@ -78,13 +78,15 @@ class Hero(Player):
     def __init__(self, hand, stack=100):
         Player.__init__(self, hand, stack)
         self.name = 'Hero'
+        self.hero_player = preflop_player.Play()
+
     def get_next(self, state, human, min_bet, max_bet):
         val = None
         money_in = self.escrow + state.pot/2
         money_required = max(self.escrow, human.escrow) + state.pot/2
         logging.info(('first bet', state.first_bet))
         if state.round == Round.PREFLOP:
-            val = preflop_player.play_preflop(
+            val = self.hero_player.play_preflop(
                     self.hand,
                     money_in,
                     money_required,
@@ -93,7 +95,7 @@ class Hero(Player):
                     self == state.big_blind,
                     state.first_bet)
         elif state.round == Round.FLOP:
-            val = preflop_player.play_afterflop(
+            val = self.hero_player.play_afterflop(
                     self.hand,
                     state.table,
                     money_in,
@@ -103,7 +105,7 @@ class Hero(Player):
                     self == state.big_blind, # no
                     state.first_bet)# no
         elif state.round == Round.TURN:
-            val = preflop_player.play_turn(
+            val = self.hero_player.play_turn(
                     self.hand,
                     state.table,
                     money_in,
@@ -113,7 +115,7 @@ class Hero(Player):
                     self == state.big_blind, # no
                     state.first_bet) # no
         elif state.round == Round.RIVER:
-            val = preflop_player.play_river(
+            val = self.hero_player.play_river(
                     self.hand,
                     state.table,
                     money_in,
@@ -141,6 +143,7 @@ class Game(object):
             r = self.deal_and_play(1)
         if r != -1:
             self.end_game()
+        print 'Hero\'s explanation of its decisions:', self.hero.hero_player.explanation
         return self.stacks()
 
     def other_player(self, player):
