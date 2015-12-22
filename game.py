@@ -25,7 +25,8 @@ class State(object):
         self.small_blind_val = blinds[0]
         self.big_blind_val = blinds[1]
         self.round = Round.PREFLOP
-        self.first_bet = True
+        self.first_bet = None
+
     def __str__(self):
         return str((self.required(), self.pot, self.big_blind.stack, self.big_blind.escrow, self.small_blind.stack, self.small_blind.escrow))
 
@@ -173,8 +174,6 @@ class Game(object):
             print player.name + ' has called'
         else:
             print player.name + ' raised to ' + str(bet)
-
-
         return (bet, min_bet)
 
     def preflop(self):
@@ -200,9 +199,9 @@ class Game(object):
         person = self.state.small_blind
         self.state.first_bet = True
         move, min_bet = self.get_move(person)
+        self.state.first_bet = False
         logging.info(move)
         bb_gone = False
-        self.state.first_bet = False
         if move < min_bet:
             return -1
         while (not bb_gone) or move > min_bet:
