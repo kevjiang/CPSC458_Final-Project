@@ -49,16 +49,7 @@ def play_preflop(hand, money_in, money_required, big_blind, max_bet, position = 
   else:
     win_ratio = win_ratio * (1 - kPositionDisadvantage)
 
-  print 'calling preflop play'
-  print 'money in is ' + str(money_in)
-  print 'money required is ' + str(money_required)
-  print 'stack size is ' + str(max_bet)
-  print 'position is ' + str(position)
-  print 'small_blind is ' + str(position)
-  print win_ratio
-
   if small_blind:
-    print 'small blind'
     if win_ratio > cost_benefit_ratio:
       # 'bluff' by calling with a really good hand
       if random.random() < kUndercut:
@@ -80,7 +71,6 @@ def play_preflop(hand, money_in, money_required, big_blind, max_bet, position = 
   else:
     # use random_permute to sometimes play slightly worse hands as good hands
     if randomPermute(win_ratio, kRandomFactor) > kGoodRatio:
-      print 'good ratio'
       if random.random() < kUndercut:
         final_bet = money_required - money_in
       else:
@@ -98,8 +88,6 @@ def play_preflop(hand, money_in, money_required, big_blind, max_bet, position = 
         final_bet = money_required - money_in
       else:
         final_bet = -1
-
-  print 'final bet is ' + str(final_bet)
 
   # this is just to make sure we're not overambitious with betting
   if final_bet > max_bet:
@@ -124,8 +112,6 @@ def play_afterflop(hand, table, money_in, money_required, big_blind, max_bet, po
   hand_strength = afterflop_sim.getStrength(hand, table)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
-
-  print 'small_blind is ' + str(position)
 
   # correcting for advantageous position
   if position:
@@ -208,8 +194,6 @@ def play_turn(hand, table, money_in, money_required, big_blind, max_bet, positio
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
 
-  print 'small_blind is ' + str(position)
-
   # correcting for advantageous position
   if position:
     win_ratio = win_ratio * (1 + kPositionAdvantage)
@@ -286,8 +270,6 @@ def play_river(hand, table, money_in, money_required, big_blind, max_bet, positi
   hand_strength = afterriver_sim.getStrength(hand, table)
   win_ratio = hand_strength[0] / (hand_strength[0] + hand_strength[2])
   cost_benefit_ratio = (money_required - money_in) / float(money_required)
-
-  print 'small_blind is ' + str(position)
 
   # correcting for advantageous position
   if position:
