@@ -151,8 +151,8 @@ class Game(object):
 
     def get_move(self, player):
         other = self.other_player(player)
-        max_bet = min(player.stack, other.stack + other.escrow)
-        min_bet = self.state.required()
+        max_bet = min(player.stack, other.stack + other.escrow - player.escrow)
+        min_bet = min(self.state.required(), max_bet)
         bet_valid = False
         bet = 0
         while not bet_valid:
