@@ -13,7 +13,7 @@ class Round:
     RIVER = 3
 
 class State(object):
-    def __init__(self, hero, human, rounds):
+    def __init__(self, hero, human, blinds, rounds):
         self.deck = cards.Deck()
         self.deck.shuffle()
         self.table = cards.Hand()
@@ -22,9 +22,10 @@ class State(object):
             self.big_blind, self.small_blind = (hero, human)
         else:
             self.big_blind, self.small_blind = (human, hero)
-        self.small_blind_val = 10
-        self.big_blind_val = 20
+        self.small_blind_val = blinds[0]
+        self.big_blind_val = blinds[1]
         self.round = Round.PREFLOP
+        self.first_bet = True
     def __str__(self):
         return str((self.required(), self.pot, self.big_blind.stack, self.big_blind.escrow, self.small_blind.stack, self.small_blind.escrow))
 
@@ -85,9 +86,9 @@ class Hero(Player):
                     money_in,
                     money_required,
                     state.big_blind_val,
-                    self.stack,
+                    max_bet,
                     self == state.big_blind,
-                    self == state.small_blind)
+                    state.first_bet)
         elif state.round == Round.FLOP:
             val = preflop_player.play_afterflop(
                     self.hand,
@@ -95,9 +96,9 @@ class Hero(Player):
                     money_in,
                     money_required,
                     state.big_blind_val,
-                    self.stack,
+                    max_bet,
                     self == state.big_blind, # no
-                    self == state.small_blind)# no
+                    state.first_bet)# no
         elif state.round == Round.TURN:
             val = preflop_player.play_turn(
                     self.hand,
@@ -105,9 +106,9 @@ class Hero(Player):
                     money_in,
                     money_required,
                     state.big_blind_val,
-                    self.stack,
+                    max_bet,
                     self == state.big_blind, # no
-                    self == state.small_blind) # no
+                    state.first_bet) # no
         elif state.round == Round.RIVER:
             val = preflop_player.play_river(
                     self.hand,
@@ -115,17 +116,17 @@ class Hero(Player):
                     money_in,
                     money_required,
                     state.big_blind_val,
-                    self.stack,
+                    max_bet,
                     self == state.big_blind, # no
-                    self == state.small_blind) # no
+                    state.first_bet) # no
         return val
 
 
 class Game(object):
-    def __init__(self, human_stack, hero_stack, rounds):
+    def __init__(self, human_stack, hero_stack, blinds, rounds):
         self.hero = Hero(cards.Hand(), hero_stack)
         self.human = Human(cards.Hand(), human_stack)
-        self.state = State(self.hero, self.human, rounds)
+        self.state = State(self.hero, self.human, blinds, rounds)
 
     def play_game(self):
         r = self.preflop()
@@ -197,9 +198,11 @@ class Game(object):
 
         # get small blind move first
         person = self.state.small_blind
+        self.state.first_bet = True
         move, min_bet = self.get_move(person)
         logging.info(move)
         bb_gone = False
+        self.state.first_bet = False
         if move < min_bet:
             return -1
         while (not bb_gone) or move > min_bet:
@@ -258,9 +261,11 @@ class Game(object):
 
         # big blind move first
         person = self.state.big_blind
+        self.state.first_bet = True
         move, min_bet = self.get_move(person)
         logging.info(move)
         sb_gone = False
+        self.state.first_bet = False
         if move < min_bet:
             return -1
         while (not sb_gone) or move > min_bet:

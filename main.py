@@ -35,6 +35,9 @@ if __name__ == '__main__':
 
         human_stack = 300
         hero_stack = 300
+        blinds = (5, 10)
+
+        print 'The big blind is', blinds[1], 'and the little blind is', blinds[0]
         while hero_stack > 0 and human_stack > 0:
             print '================================================================================ '
             print '             Round ' + str(rounds)
@@ -43,7 +46,7 @@ if __name__ == '__main__':
                     ' dollars and hero has ' +  str(hero_stack) + ' dollars.'
 
             # start_game
-            gm = game.Game(human_stack, hero_stack, rounds)
+            gm = game.Game(human_stack, hero_stack, blinds, rounds)
             gm.play_game()
             human_stack, hero_stack = gm.stacks()
             rounds += 1

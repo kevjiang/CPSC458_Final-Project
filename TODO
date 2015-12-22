@@ -1,2 +1,11 @@
 eric - figure out hands.py, program plays at every stage, print out decision reasoning
-pranav - structure for poker play, incorporate eric's code
+
+
+pranav 
+    - at low numbers
+    - pretty print tables
+    - big / small at beginning
+    - explanations
+    - small blind bool val
+    - stack size as max_bet
+-
