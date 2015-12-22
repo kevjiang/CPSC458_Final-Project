@@ -176,7 +176,7 @@ class Play(object):
     if final_bet > max_bet:
       final_bet = max_bet
 
-    self.explanation += "After the flop, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result."
+    self.explanation += "After the flop, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result. "
 
     return final_bet
 
@@ -259,7 +259,7 @@ class Play(object):
     if final_bet > max_bet:
       final_bet = max_bet
 
-    self.explanation += "After the turn, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result."
+    self.explanation += "After the turn, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result. "
 
     return final_bet
 
@@ -339,7 +339,7 @@ class Play(object):
     if final_bet > max_bet:
       final_bet = max_bet
 
-    self.explanation += "After the river, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result."
+    self.explanation += "After the river, hero's hand had a win ratio of " + str(win_ratio) + " and a cost-benefit ratio of " + str(cost_benefit_ratio) + " and we bet " + str(final_bet) + " as a result. "
 
     return final_bet
 

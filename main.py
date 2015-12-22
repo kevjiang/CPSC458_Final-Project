@@ -9,8 +9,8 @@ import random
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
-    # logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
+    # logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+    logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
     rounds = 1
     try:
         print '''
