@@ -31,7 +31,7 @@ class Play(object):
 
   def play_preflop(self, hand, money_in, money_required, big_blind, max_bet, position = False, small_blind = True):
     kUndercut = .33 # chance that hero bets small with a really good hand
-    kLimp = .2 # chance that hero limps in with a poor hand
+    kLimp = .3 # chance that hero limps in with a poor hand
     kGoodHand = .1 # really good hand differential
     kBetFactor = 4
     kConstantBetFactor = .75
@@ -110,7 +110,7 @@ class Play(object):
     kRandomFactor = .1 # max value of random factor
     kReallyRandomFactor = 20
     kSmallBetFactor = .5
-    kLimp = .2 # chance that hero limps in with a poor hand
+    kLimp = .3 # chance that hero limps in with a poor hand
     final_bet = 0
 
     hand_strength = afterflop_sim.getStrength(hand, table)
@@ -133,7 +133,6 @@ class Play(object):
         else:
           final_bet = int(win_ratio * kBetFactor * money_in)
       else:
-        win_ratio = randomPermute(win_ratio, kRandomFactor)
         if randomPermute(win_ratio, kRandomFactor) > kGoodRatio or random.random() < kLimp:
           if random.random() < kLimp:
             final_bet = int(randomPermute(money_in * kSmallBetFactor, kRandomFactor * kReallyRandomFactor)) # weird bluff bet
@@ -186,7 +185,7 @@ class Play(object):
     kUndercut = .4 # chance that hero bets small with a really good hand
     kReallyGoodRatio = .75
     kBetRatio = .65 # win percentage that needs to be exceeded to bet first
-    kGoodRatio = .55
+    kGoodRatio = .525
     kBetFactor = 2
     kConstantBetFactor = .75
     kRandomFactor = .1 # max value of random factor
@@ -194,7 +193,7 @@ class Play(object):
     kSmallBetFactor = .5
     kRiskFactor = .05
     kStretchFactor = .9
-    kLimp = .2 # chance that hero limps in with a poor hand
+    kLimp = .3 # chance that hero limps in with a poor hand
     final_bet = 0
 
     hand_strength = afterturn_sim.getStrength(hand, table)
@@ -217,7 +216,6 @@ class Play(object):
         else:
           final_bet = int(win_ratio * kBetFactor * money_in)
       else:
-        win_ratio = randomPermute(win_ratio, kRandomFactor)
         if randomPermute(win_ratio, kRandomFactor) > kGoodRatio or random.random() < kLimp:
           if random.random() < kLimp:
             final_bet = int(randomPermute(money_in * kSmallBetFactor, kRandomFactor * kReallyRandomFactor)) # weird bluff bet
@@ -267,14 +265,14 @@ class Play(object):
     kUndercut = .4 # chance that hero bets small with a really good hand
     kReallyGoodRatio = .775
     kBetRatio = .675 # win percentage that needs to be exceeded to bet first
-    kGoodRatio = .6
+    kGoodRatio = .575
     kBetFactor = 2
     kConstantBetFactor = .75
     kRandomFactor = .1 # max value of random factor
     kReallyRandomFactor = 20
     kSmallBetFactor = .5
     kStretchFactor = .85
-    kLimp = .2 # chance that hero limps in with a poor hand
+    kLimp = .3 # chance that hero limps in with a poor hand
     final_bet = 0
 
     hand_strength = afterriver_sim.getStrength(hand, table)
@@ -297,7 +295,6 @@ class Play(object):
         else:
           final_bet = int(win_ratio * kBetFactor * money_in)
       else:
-        win_ratio = randomPermute(win_ratio, kRandomFactor)
         if randomPermute(win_ratio, kRandomFactor) > kGoodRatio or random.random() < kLimp:
           if random.random() < kLimp:
             final_bet = int(randomPermute(money_in * kSmallBetFactor, kRandomFactor * kReallyRandomFactor)) # weird bluff bet
