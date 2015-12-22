@@ -7,20 +7,32 @@ import game
 import preflop_sim
 import random
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 if __name__ == '__main__':
     # logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     logging.basicConfig(level=logging.WARNING, format='%(asctime)s %(message)s')
     rounds = 1
     try:
-        print '''
+        print bcolors.OKBLUE + '''
            __  ___________    ____  _____    __  ______  __
   __/|_   / / / / ____/   |  / __ \/ ___/   / / / / __ \/ /  __/|_
  |    /  / /_/ / __/ / /| | / / / /\__ \   / / / / /_/ / /  |    /
 /_ __|  / __  / /___/ ___ |/ /_/ /___/ /  / /_/ / ____/_/  /_ __|
  |/    /_/ /_/_____/_/  |_/_____//____/   \____/_/   (_)    |/
 
+        ''' + bcolors.ENDC
 
+        print '''
             Let's play some no limit texas hold'em!
 
             You are playing against a single opponent named Hero.

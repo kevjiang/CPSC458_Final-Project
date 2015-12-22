@@ -6,6 +6,16 @@ import preflop_sim
 import preflop_player
 import sys
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 class Round:
     PREFLOP = 0
     FLOP = 1
@@ -65,9 +75,21 @@ class Human(Player):
         '''
             Finds a move that isnt malformed
         '''
+        val = '''
+    Human stack:    {}
+    Human escrow:   {}
+    Hero stack:     {}
+    Hero escrow:    {}
+    Pot size:       {}
+    Human hand:     {}
+    Table cards:    {}
+    To call:        {}
+            '''.format(self.stack, self.escrow, hero.stack, hero.escrow, state.pot, self.hand, state.table, min_bet)
+
         out = None
         while out == None:
-            sys.stdout.write('\nHuman decision {-1, [' + str(min_bet) +', ' + str(max_bet) + ']} -> ')
+            sys.stdout.write(bcolors.OKBLUE + val + bcolors.ENDC)
+            sys.stdout.write('\n' + bcolors.BOLD + 'Human decision {-1, [' + str(min_bet) +', ' + str(max_bet) + ']} -> ' + bcolors.ENDC)
             out = self.parse_input(sys.stdin.readline())
             print ''
             if out == None:
@@ -133,6 +155,9 @@ class Game(object):
         self.human = Human(cards.Hand(), human_stack)
         self.state = State(self.hero, self.human, blinds, rounds)
 
+
+
+
     def play_game(self):
         r = self.preflop()
         if r != -1:
@@ -174,11 +199,11 @@ class Game(object):
         player.push(self.state, bet)
 
         if bet == 0:
-            print player.name + ' has checked'
+            print bcolors.OKBLUE + player.name + ' has checked' + bcolors.ENDC
         elif bet == min_bet:
-            print player.name + ' has called'
+            print bcolors.OKBLUE + player.name + ' has called' + bcolors.ENDC
         else:
-            print player.name + ' raised to ' + str(bet)
+            print bcolors.OKBLUE + player.name + ' raised to ' + str(bet) + bcolors.ENDC
         return (bet, min_bet)
 
     def preflop(self):
@@ -222,7 +247,7 @@ class Game(object):
         self.state.round += 1
 
     def fold(self, loser):
-        print loser.name + ' has folded.'
+        print bcolors.FAIL + loser.name + ' has folded.' + bcolors.ENDC
         winner = self.other_player(loser)
         winner.stack += loser.escrow
         winner.stack += winner.escrow
@@ -242,12 +267,12 @@ class Game(object):
         else:
             self.human += self.state.pot / 2.0
             self.hero += self.state.pot / 2.0
-            print 'The game was a tie.'
+            print bcolors.FAIL + 'The game was a tie.' + bcolors.ENDC
             print 'Hero had', self.hero.hand
             return
 
         loser = self.other_player(winner)
-        print winner.name + ' has won the round with a ' + reason
+        print bcolors.FAIL + winner.name + ' has won the round with a ' + reason + bcolors.ENDC
         print 'Hero had', self.hero.hand
         winner.stack += loser.escrow
         winner.stack += winner.escrow
