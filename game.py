@@ -6,6 +6,7 @@ import preflop_sim
 import preflop_player
 import sys
 
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -16,13 +17,16 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 class Round:
     PREFLOP = 0
     FLOP = 1
     TURN = 2
     RIVER = 3
 
+
 class State(object):
+
     def __init__(self, hero, human, blinds, rounds):
         self.deck = cards.Deck()
         self.deck.shuffle()
@@ -38,7 +42,13 @@ class State(object):
         self.first_bet = None
 
     def __str__(self):
-        return str((self.required(), self.pot, self.big_blind.stack, self.big_blind.escrow, self.small_blind.stack, self.small_blind.escrow))
+        return str(
+            (self.required(),
+             self.pot,
+             self.big_blind.stack,
+             self.big_blind.escrow,
+             self.small_blind.stack,
+             self.small_blind.escrow))
 
     def clear_ecrows(self):
         esc = min(self.big_blind.escrow, self.small_blind.escrow)
@@ -49,7 +59,9 @@ class State(object):
     def required(self):
         return abs(self.big_blind.escrow - self.small_blind.escrow)
 
+
 class Player(object):
+
     def __init__(self, hand, stack=100):
         self.hand = hand
         self.stack = stack
@@ -59,7 +71,9 @@ class Player(object):
         self.stack -= amt
         self.escrow += amt
 
+
 class Human(Player):
+
     def __init__(self, hand, stack=100):
         Player.__init__(self, hand, stack)
         self.name = 'Human'
@@ -87,16 +101,26 @@ class Human(Player):
             '''.format(self.stack, self.escrow, hero.stack, hero.escrow, state.pot, self.hand, state.table, min_bet)
 
         out = None
-        while out == None:
+        while out is None:
             sys.stdout.write(bcolors.OKBLUE + val + bcolors.ENDC)
-            sys.stdout.write('\n' + bcolors.BOLD + 'Human decision {-1, [' + str(min_bet) +', ' + str(max_bet) + ']} -> ' + bcolors.ENDC)
+            sys.stdout.write(
+                '\n' +
+                bcolors.BOLD +
+                'Human decision {-1, [' +
+                str(min_bet) +
+                ', ' +
+                str(max_bet) +
+                ']} -> ' +
+                bcolors.ENDC)
             out = self.parse_input(sys.stdin.readline())
             print ''
-            if out == None:
+            if out is None:
                 print 'Malformed decision'
         return out
 
+
 class Hero(Player):
+
     def __init__(self, hand, stack=100):
         Player.__init__(self, hand, stack)
         self.name = 'Hero'
@@ -104,59 +128,57 @@ class Hero(Player):
 
     def get_next(self, state, human, min_bet, max_bet):
         val = None
-        money_in = self.escrow + state.pot/2
-        money_required = max(self.escrow, human.escrow) + state.pot/2
+        money_in = self.escrow + state.pot / 2
+        money_required = max(self.escrow, human.escrow) + state.pot / 2
         logging.info(('first bet', state.first_bet))
         if state.round == Round.PREFLOP:
             val = self.hero_player.play_preflop(
-                    self.hand,
-                    money_in,
-                    money_required,
-                    state.big_blind_val,
-                    max_bet,
-                    self == state.big_blind,
-                    state.first_bet)
+                self.hand,
+                money_in,
+                money_required,
+                state.big_blind_val,
+                max_bet,
+                self == state.big_blind,
+                state.first_bet)
         elif state.round == Round.FLOP:
             val = self.hero_player.play_afterflop(
-                    self.hand,
-                    state.table,
-                    money_in,
-                    money_required,
-                    state.big_blind_val,
-                    max_bet,
-                    self == state.big_blind, # no
-                    state.first_bet)# no
+                self.hand,
+                state.table,
+                money_in,
+                money_required,
+                state.big_blind_val,
+                max_bet,
+                self == state.big_blind,  # no
+                state.first_bet)  # no
         elif state.round == Round.TURN:
             val = self.hero_player.play_turn(
-                    self.hand,
-                    state.table,
-                    money_in,
-                    money_required,
-                    state.big_blind_val,
-                    max_bet,
-                    self == state.big_blind, # no
-                    state.first_bet) # no
+                self.hand,
+                state.table,
+                money_in,
+                money_required,
+                state.big_blind_val,
+                max_bet,
+                self == state.big_blind,  # no
+                state.first_bet)  # no
         elif state.round == Round.RIVER:
             val = self.hero_player.play_river(
-                    self.hand,
-                    state.table,
-                    money_in,
-                    money_required,
-                    state.big_blind_val,
-                    max_bet,
-                    self == state.big_blind, # no
-                    state.first_bet) # no
+                self.hand,
+                state.table,
+                money_in,
+                money_required,
+                state.big_blind_val,
+                max_bet,
+                self == state.big_blind,  # no
+                state.first_bet)  # no
         return val
 
 
 class Game(object):
+
     def __init__(self, human_stack, hero_stack, blinds, rounds):
         self.hero = Hero(cards.Hand(), hero_stack)
         self.human = Human(cards.Hand(), human_stack)
         self.state = State(self.hero, self.human, blinds, rounds)
-
-
-
 
     def play_game(self):
         r = self.preflop()
@@ -186,11 +208,16 @@ class Game(object):
         bet_valid = False
         bet = 0
         while not bet_valid:
-            bet = player.get_next(self.state, self.other_player(player), min_bet, max_bet)
+            bet = player.get_next(
+                self.state,
+                self.other_player(player),
+                min_bet,
+                max_bet)
             if bet < min_bet:
                 self.fold(player)
                 return (bet, min_bet)
-                # print 'Bet of ' + str(bet) + ' too low. The minimum is', min_bet
+                # print 'Bet of ' + str(bet) + ' too low. The minimum is',
+                # min_bet
             elif bet > max_bet:
                 print 'Bet of ' + str(bet) + ' too high. The maximum is', max_bet
             else:
@@ -243,7 +270,10 @@ class Game(object):
 
         logging.info(self.state)
         self.state.clear_ecrows()
-        logging.info(('hi', str(self.state), self.human.stack, self.hero.stack))
+        logging.info(('hi',
+                      str(self.state),
+                      self.human.stack,
+                      self.hero.stack))
         self.state.round += 1
 
     def fold(self, loser):
@@ -258,7 +288,8 @@ class Game(object):
         while len(self.state.table.cards) < 5:
             self.state.table.add_card(self.state.deck.deal_card())
 
-        res, reason = hands.compare_hands(self.human.hand, self.hero.hand, self.state.table)
+        res, reason = hands.compare_hands(
+            self.human.hand, self.hero.hand, self.state.table)
         winner = None
         if res == 'left':
             winner = self.human
@@ -306,7 +337,10 @@ class Game(object):
 
         logging.info(self.state)
         self.state.clear_ecrows()
-        logging.info(('hi', str(self.state), self.human.stack, self.hero.stack))
+        logging.info(('hi',
+                      str(self.state),
+                      self.human.stack,
+                      self.hero.stack))
         self.state.round += 1
 
 if __name__ == '__main__':
