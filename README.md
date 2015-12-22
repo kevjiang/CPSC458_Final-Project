@@ -43,6 +43,8 @@ When moving to later rounds, however, things get more difficult. We choose to si
 
 After we calculate hand strength from these Monte Carlo simulations and by categorizing the player's current hand into one of these buckets, we calculate the cost-benefit ratio from the money required to be put in and the money that is already in the pot. We then come up with a strategy after taking into account hand strength, cost benefit ratio, position, bet order, the maximum bet, and the big blind. You can read more about the strategy and view the source code in player.py.
 
+Take note that the engine bluffs or limps into a hand with a bad hand with a certain adjustable percentage. This is why you'll see really good hands with a bet of 0 to lure opponents into betting high. The engine will also employ tactics such as betting low and reraising if it sees fit. The engine errs on the side of aggression - being aggressive in this game is much better than folding too many hands.
+
 ## Next Steps
 
 To improve the CPU, the first step would be to take the table hand into consideration. If the table has strong cards, then the CPU will bet accordingly. The next step after that is to implement some machine learning tactics to understand the opponent. Right now, if the opponent goes all in every single hand, the bot will win most of the time. However, we need some machine learning to punish that poor play even more. We could also simulate the Monte Carlo simulations for more specific features, thus narrowing down true win percentages of hands. Finally, to become very, very smart, the poker CPU will have to understand risk factors such as straight draws or flush draws on the table.
